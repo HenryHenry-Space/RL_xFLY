@@ -98,10 +98,12 @@ class InvertedPendulumEnv_down(mujoco_env.MujocoEnv, utils.EzPickle):
         # reward = 1.0
         self.do_simulation(a, self.frame_skip)
         ob = self._get_obs()
-        done = np.abs(ob[3]) < 0.1 and ((np.pi-np.abs(ob[1])) < 0.2)
+        # done = np.abs(ob[3]) < 0.1 and ((np.pi-np.abs(ob[1])) < 0.2)
         reward = 1 - np.tanh(10.0 * (1-(np.abs(ob[1])/(np.pi))%1))
         if np.abs(ob[0])>0.98:
             reward -= 0.4
+        notdone = np.isfinite(ob).all() and (np.abs(ob[1]) <= 0.2)
+        done = not notdone
         # print("reward = ", reward)
         # print("np.abs(ob[1]) = ", np.abs(ob[1]))
         # print("(np.abs(ob[1])%(np.pi)) = ", (np.abs(ob[1])%(np.pi)))
